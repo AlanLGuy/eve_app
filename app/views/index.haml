@@ -1,0 +1,26 @@
+%html{lang: "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{content: "width=device-width, initial-scale=1", name: "viewport"}/
+    %meta{content: "", name: "description"}/
+    %meta{content: "", name: "author"}/
+    %link{:href => "../../assets/ico/favicon.ico", rel: "shortcut icon"}/
+    %title Theme Template for Bootstrap
+    / Bootstrap core CSS
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", :rel => :stylesheet}/
+    / Bootstrap theme
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css", :rel => :stylesheet}/
+    / Custom styles for this template
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/theme.css", rel: "stylesheet"}/
+    / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
+    /[if lt IE 9]
+%body{role: "document"}
+  %h1 My Eve App
+  %div
+    %span= @character.name
+    %img{:src => @character.portrait}
+  %div
+    %h2 Skills
+    %p= @character.skills
+  %p= @log

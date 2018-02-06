@@ -1,0 +1,4 @@
+app/config/private.yaml
+app/static_data/
+assets/
+.idea/
