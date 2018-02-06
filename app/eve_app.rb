@@ -10,7 +10,6 @@ require_relative 'lib/character'
 class EveApp < Sinatra::Base
 
   if settings.environment == :local
-    set :port, 7272
 
     private_data = YAML.load_file('app/config/private.yaml')
     REDIRECT_URI = 'http://localhost:7272/authorized'
@@ -28,8 +27,6 @@ class EveApp < Sinatra::Base
   STATE = 'thatsanicestateyouhavethere'
 
   set :haml, :format => :html5
-
-
   enable :sessions
 
   get '/authorized' do
