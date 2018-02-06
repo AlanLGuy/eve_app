@@ -23,7 +23,7 @@ STATE = 'thatsanicestateyouhavethere'
 
 class EveApp < Sinatra::Base
   set :haml, :format => :html5
-  set :port, 7272
+
 
   enable :sessions
 
