@@ -1,5 +1,4 @@
 require 'rest-client'
-require 'launchy'
 require 'rack'
 require 'sinatra/base'
 require 'base64'
