@@ -1,2 +1,2 @@
 require './app/eve_app'
-EveApp.run
+EveApp.run!
