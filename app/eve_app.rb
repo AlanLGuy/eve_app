@@ -15,6 +15,9 @@ if File.exist?(File.expand_path('../config/private.yaml', __FILE__))
 else
   CLIENT_ID = ENV['CLIENT_ID']
   CLIENT_SECRET = ENV['CLIENT_SECRET']
+
+  puts CLIENT_ID
+  puts CLIENT_SECRET
 end
 
 REDIRECT_URI = 'https://thawing-hollows-77046.herokuapp.com/authorized'
