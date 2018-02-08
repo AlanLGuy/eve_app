@@ -16,10 +16,11 @@
     / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
     /[if lt IE 9]
 %body{role: "document"}
-  %h1 My Eve App
+  %h1.justify-content-center My Eve App
   %div
     %span= @character.name
-    %img{:src => @character.portrait}
+  %div
+    %img.border{:src => @character.portrait}
   %div
     %h2 Skills
     %p= @character.skills
