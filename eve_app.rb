@@ -1,48 +1,82 @@
-require 'rest-client'
-require 'base64'
-require 'haml'
 require 'sinatra/base'
+require 'haml'
+require 'yaml'
+require 'lib/models'
+require 'lib/config'
+require 'lib/session'
+require 'lib/eve_client'
 
-require_relative 'lib/character'
-
-class EveApp < Sinatra::Application
-
-  set :haml, :format => :html5
-  enable :sessions
-
-  get '/authorized' do
-    $authorization_code = @params['code']
-    $client_state = @params['state']
-
-    header = {:Authorization => "Basic #{Base64.strict_encode64(CLIENT_ID + ":" + CLIENT_SECRET)}"}
-    params = {:grant_type => "authorization_code", :code => $authorization_code}
-    response = JSON(RestClient.post('https://login.eveonline.com/oauth/token', params, header).body)
-
-    session[:access_token] = response["access_token"]
-    session[:refresh_token] = response["refresh_token"]
-
-    redirect('index')
+module EveApp
+  class << self
+    attr_accessor :config
   end
 
-  get '/' do
-    parameters = "?response_type=code&redirect_uri=#{REDIRECT_URI}&client_id=#{CLIENT_ID}&scope=#{SCOPE}&state=#{STATE}"
+  class Application < Sinatra::Base
 
-    if session[:access_token]
+    before do
+      Session.access_token = session[:access_token]
+    end
+
+    configure do
+      enable :sessions
+
+    end
+
+    configure :production do
+      Config.scope = 'esi-skills.read_skills.v1 esi-skills.read_skillqueue.v1 esi-wallet.read_character_wallet.v1 esi-assets.read_assets.v1 esi-planets.manage_planets.v1 esi-markets.structure_markets.v1 esi-characters.read_standings.v1 esi-characters.read_agents_research.v1 esi-industry.read_character_jobs.v1 esi-markets.read_character_orders.v1 esi-characters.read_blueprints.v1 esi-contracts.read_character_contracts.v1 esi-wallet.read_corporation_wallets.v1 esi-industry.read_corporation_jobs.v1 esi-industry.read_character_mining.v1'
+      Config.state = 'thatsanicestateyouhavethere'
+      Config.redirect_uri = 'https://thawing-hollows-77046.herokuapp.com/authorized'
+      Config.client_id = ENV['CLIENT_ID']
+      Config.client_secret = ENV['CLIENT_SECRET']
+    end
+
+    configure :local do
+      private_data = YAML.load_file('config/private.yaml')
+      Config.redirect_uri = 'http://localhost:7272/authorized'
+      Config.client_id = private_data[:CLIENT_ID]
+      Config.client_secret = private_data[:CLIENT_SECRET]
+      Config.scope = 'esi-skills.read_skills.v1 esi-skills.read_skillqueue.v1 esi-wallet.read_character_wallet.v1 esi-assets.read_assets.v1 esi-planets.manage_planets.v1 esi-markets.structure_markets.v1 esi-characters.read_standings.v1 esi-characters.read_agents_research.v1 esi-industry.read_character_jobs.v1 esi-markets.read_character_orders.v1 esi-characters.read_blueprints.v1 esi-contracts.read_character_contracts.v1 esi-wallet.read_corporation_wallets.v1 esi-industry.read_corporation_jobs.v1 esi-industry.read_character_mining.v1'
+      Config.state = 'thatsanicestateyouhavethere'
+
+      set :port, 7272
+      set :reload_templates, true
+    end
+
+    set :haml, :format => :html5
+
+    get '/authorized' do
+      authorization_code = @params['code']
+      client_state = @params['state']
+      session[:access_token], session[:refresh_token] = EveClient::Authorization.authorize(authorization_code)
+      Session.access_token = session[:access_token]
+      session[:character_id] = EveClient::Authorization.verify
       redirect('index')
-    else
-      redirect("https://login.eveonline.com/oauth/authorize/#{parameters}")
     end
-  end
 
-  get '/index' do
-    unless session[:access_token]
-      parameters = "?response_type=code&redirect_uri=#{REDIRECT_URI}&client_id=#{CLIENT_ID}&scope=#{SCOPE}&state=#{STATE}"
-      redirect("https://login.eveonline.com/oauth/authorize/#{parameters}")
+    get '/' do
+      redirect('index')
+
+      # if session[:access_token]
+      #   redirect('index')
+      # else
+      #   redirect(EveClient::Authorization.login_url)
+      # end
     end
-    @log = []
-    @character = Character.new(session[:access_token])
 
-    haml :index
+    get '/login' do
+      redirect(EveClient::Authorization.login_url)
+    end
+
+    get '/index' do
+      unless session[:access_token]
+        haml :login
+        # redirect(EveClient::Authorization.login_url)
+      else
+        @log = []
+        @character = Character.new(session[:character_id])
+        haml :index
+      end
+    end
+
   end
-
 end

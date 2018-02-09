@@ -1,4 +1,4 @@
-app/config/private.yaml
+config/private.yaml
 app/static_data/
 assets/
 .idea/
