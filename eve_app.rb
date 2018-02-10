@@ -1,10 +1,17 @@
 require 'sinatra/base'
 require 'haml'
 require 'yaml'
-require 'lib/models'
+require 'data_mapper'
+require 'lib/controllers'
 require 'lib/config'
 require 'lib/session'
 require 'lib/eve_client'
+
+require 'models/model'
+
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
+DataMapper.finalize
+
 
 module EveApp
   class << self
@@ -19,7 +26,6 @@ module EveApp
 
     configure do
       enable :sessions
-
     end
 
     configure :production do
@@ -40,13 +46,13 @@ module EveApp
 
       set :port, 7272
       set :reload_templates, true
+      set :public_folder, 'public'
     end
 
     set :haml, :format => :html5
 
     get '/authorized' do
       authorization_code = @params['code']
-      client_state = @params['state']
       session[:access_token], session[:refresh_token] = EveClient::Authorization.authorize(authorization_code)
       Session.access_token = session[:access_token]
       session[:character_id] = EveClient::Authorization.verify
@@ -55,12 +61,6 @@ module EveApp
 
     get '/' do
       redirect('index')
-
-      # if session[:access_token]
-      #   redirect('index')
-      # else
-      #   redirect(EveClient::Authorization.login_url)
-      # end
     end
 
     get '/login' do
@@ -68,14 +68,11 @@ module EveApp
     end
 
     get '/index' do
-      unless session[:access_token]
-        haml :login
-        # redirect(EveClient::Authorization.login_url)
-      else
+      if session[:access_token]
         @log = []
         @character = Character.new(session[:character_id])
-        haml :index
       end
+      haml :index
     end
 
   end

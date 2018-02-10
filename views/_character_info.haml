@@ -1,0 +1,16 @@
+%div
+  %span.text-light= @character.name
+%div
+  %img{:class => 'border rounded', :src => @character.portrait}
+  %div.container
+    %span{'font-size' => '50px'} Skills
+    %ul
+    - @character.skills.each do |skill|
+      %li{}= skill
+  %div.container
+    %span{'font-size' => '30px'}Owned Blueprints
+    %ul
+    - if @character.blueprints
+      - @character.blueprints.each do |blueprint|
+        %li{}= blueprint
+  %p= @log

@@ -23,11 +23,34 @@ module EveClient
       end
 
       def get(resource)
+        url = "#{BASE_URL}#{resource}"
+        begin
+          if public?(resource)
+            response = RestClient.get(url)
+          else
+            response = RestClient.get(url, header)
+          end
 
+          if response.code == 200
+            JSON(response.body)
+          else
+            begin
+              raise(ConnectionError, response)
+            rescue => e
+              puts e.response
+            end
+          end
+        rescue => e
+          puts url
+          puts e.message
+        end
+      end
+
+      def post(resource, data)
         if public?(resource)
-          response = RestClient.get("#{BASE_URL}#{resource}")
+          response = RestClient.post("#{BASE_URL}#{resource}", data)
         else
-          response = RestClient.get("#{BASE_URL}#{resource}", header)
+          response = RestClient.post("#{BASE_URL}#{resource}", data, header)
         end
 
         if response.code == 200
@@ -39,7 +62,6 @@ module EveClient
             puts e.response
           end
         end
-
       end
 
       def public?(resource)

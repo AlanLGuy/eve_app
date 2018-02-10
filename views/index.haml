@@ -15,18 +15,16 @@
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/theme.css", rel: "stylesheet"}/
     / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
     /[if lt IE 9]
-%body{:class =>'p-3 mb-2 bg-gradient-dark text-white',role: "document"}
-  %style
-    :sass
-      div
-        color: red
+    %link{:href=>"/css/custom.css", :rel=>"stylesheet"}
+%body.bg-dark{:class =>' text-white',role: "document"}
+  %div
+  %a.ccp_login{:href=> 'login'}
+    %img.border{:src => 'img/EVE_SSO_Login_Buttons_Large_Black.png', href: 'login'}
+  %div.align-self-center
   %div
   %h1.text-light My Eve App
-  %div
-    %span.text-light= @character.name
-  %div
-    %img.border{:class => 'border border-primary rounded', :src => @character.portrait}
-    %div.container
-      %span{'font-size' => '50px'} Skills
-      %p.text-light= @character.skills
-    %p= @log
+  - if @character
+    %div
+      = haml :_character_info
+  - else
+    %span Login to view character information
