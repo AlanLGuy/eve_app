@@ -1,0 +1,14 @@
+%div
+  - if !@character
+    %a.ccp_login{:href=> 'login'}
+      %img.border{:src => 'img/EVE_SSO_Login_Buttons_Large_Black.png', href: 'login'}
+  - else
+    %img{:src => @character.portrait}
+  %div.text-light
+    %h1.title My Eve App
+  %div.nav-section
+    - if @character
+      %a{:href=> 'character'} Character Details
+    - else
+      %a.not-active{} Character Details
+    %a{:href=>'market'} Market Details

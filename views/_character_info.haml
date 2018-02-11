@@ -2,15 +2,16 @@
   %span.text-light= @character.name
 %div
   %img{:class => 'border rounded', :src => @character.portrait}
-  %div.container
-    %span{'font-size' => '50px'} Skills
+  -#%div.container
+  -#  %span{'font-size' => '50px'} Skills
+  -#  %ul
+  -#  - @character.skills.each do |skill|
+  -#    %li{}= skill
+  %div
+  %span{'font-size' => '30px'}Owned Blueprints
+  %div.icon_list
     %ul
-    - @character.skills.each do |skill|
-      %li{}= skill
-  %div.container
-    %span{'font-size' => '30px'}Owned Blueprints
-    %ul
-    - if @character.blueprints
-      - @character.blueprints.each do |blueprint|
-        %li{}= blueprint
+      - if @character.blueprints
+        - @character.blueprints.each do |blueprint|
+          = haml :_blueprint, locals: {blueprint:  blueprint}
   %p= @log

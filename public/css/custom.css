@@ -3,3 +3,34 @@
     position: absolute;
     top: 0px;
 }
+
+.icon_list > ul li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    -webkit-padding-start: 0;
+}
+
+
+.card {
+    color: azure;
+    /* Add shadows to create the "card" effect */
+}
+
+.blueprint{
+    /*box-shadow: 8px 8px 8px 2px rgba(155,155,155,0.4);*/
+    /*transition: 0.3s;*/
+    /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.8);*/
+    background-color: dimgrey;
+    padding: 2px;
+    color: azure;
+}
+
+.title{
+    text-align: center;
+}
+
+.not-active {
+    pointer-events: none;
+    cursor: default;
+}

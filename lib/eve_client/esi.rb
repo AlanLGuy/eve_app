@@ -65,7 +65,7 @@ module EveClient
       end
 
       def public?(resource)
-        PUBLIC_RESOURCES.any? {|url| resource.match?(url)}
+        PUBLIC_RESOURCES.any? {|url| resource =~ url}
       end
 
     end

@@ -11,6 +11,10 @@ module EveClient
         get("/universe/types/#{type_id}/")
       end
 
+      def get_graphics(graphics_id)
+        get("/universe/graphics/#{graphics_id}")
+      end
+
     end
   end
 end

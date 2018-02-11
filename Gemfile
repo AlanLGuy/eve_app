@@ -10,6 +10,8 @@ gem 'puma'
 gem 'data_mapper'
 gem 'dm-sqlite-adapter'
 gem 'sqlite3'
+gem 'progress_bar'
+gem 'activesupport'
 
 group :development do
   gem 'excellent'

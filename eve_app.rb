@@ -2,21 +2,29 @@ require 'sinatra/base'
 require 'haml'
 require 'yaml'
 require 'data_mapper'
+require 'active_support/core_ext/string'
+$:.unshift File.dirname(__FILE__)
 require 'lib/controllers'
 require 'lib/config'
 require 'lib/session'
 require 'lib/eve_client'
 
-require 'models/model'
 
-DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
+DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/sqlite-latest.sqlite")
+
+require 'models/model'
+DataMapper
 DataMapper.finalize
 
+# DataMapper.auto_upgrade!
 
 module EveApp
   class << self
     attr_accessor :config
   end
+
+  IMAGE_SERVER = "https://imageserver.eveonline.com/"
+
 
   class Application < Sinatra::Base
 
@@ -49,6 +57,19 @@ module EveApp
       set :public_folder, 'public'
     end
 
+    #TODO write some actual price data caching mechanism
+    #
+    stored_data = YAML.load_file(File.expand_path('../data/prices.yaml', __FILE__))
+
+    unless stored_data[:date].today?
+      prices = EveClient::Market.get_prices
+      price_data = {date: Date.today, data: prices}.to_yaml
+
+      File.open(File.expand_path('../data/prices.yaml', __FILE__), 'w') do |file|
+        file.puts price_data
+      end
+    end
+
     set :haml, :format => :html5
 
     get '/authorized' do
@@ -73,6 +94,11 @@ module EveApp
         @character = Character.new(session[:character_id])
       end
       haml :index
+    end
+
+    get '/character' do
+      @character = Character.new(session[:character_id])
+      haml :character
     end
 
   end

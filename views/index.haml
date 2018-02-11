@@ -7,24 +7,11 @@
     %meta{content: "", name: "author"}/
     %link{:href => "../../assets/ico/favicon.ico", rel: "shortcut icon"}/
     %title Theme Template for Bootstrap
-    / Bootstrap core CSS
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css", :rel => :stylesheet}/
-    / Bootstrap theme
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap-theme.min.css", :rel => :stylesheet}/
-    / Custom styles for this template
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/theme.css", rel: "stylesheet"}/
-    / HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
-    /[if lt IE 9]
     %link{:href=>"/css/custom.css", :rel=>"stylesheet"}
+= haml :_header
 %body.bg-dark{:class =>' text-white',role: "document"}
-  %div
-  %a.ccp_login{:href=> 'login'}
-    %img.border{:src => 'img/EVE_SSO_Login_Buttons_Large_Black.png', href: 'login'}
-  %div.align-self-center
-  %div
-  %h1.text-light My Eve App
-  - if @character
-    %div
-      = haml :_character_info
-  - else
-    %span Login to view character information
+
+

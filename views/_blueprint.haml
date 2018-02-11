@@ -1,0 +1,16 @@
+%li.blueprint
+  %div.card
+  %img{:src => locals[:blueprint].icon}
+  %span{}=locals[:blueprint].name
+  %span Total Cost:
+  %span=locals[:blueprint].total_cost
+  %div
+  %span Sell Price:
+  %span=locals[:blueprint].product_cost
+  %div
+  %span Profit:
+  %span= locals[:blueprint].product_cost - locals[:blueprint].total_cost
+  %div.material
+  - locals[:blueprint].materials.each do |material|
+    %img{:src => material.icon}
+    %span="#{material.name} - #{material.average_price}"

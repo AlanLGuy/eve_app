@@ -1,43 +1,41 @@
 module EveApp
   class Character
 
-    attr_accessor :name, :id, :skills, :portrait, :blueprints, :character_info
+    attr_accessor :name, :id, :skills, :portrait, :portrait_small, :blueprints_, :character_info
 
     def initialize(character_id)
       raise("Cannot initialize Character with a null ID") unless character_id
       @id = character_id
       populate_basic_character_info
-      populate_skills
-      populate_blueprints
     end
 
     def populate_basic_character_info
       unless @character_info
         @character_info = EveClient::Characters.get_basic_info(@id)
-        @portrait = EveClient::Characters.get_portrait_url(@id)['px128x128']
+        portrait_url = EveClient::Characters.get_portrait_url(@id)
+        @portrait = portrait_url['px128x128']
+        @portrait_small = portrait_url['px32x32']
         @name = @character_info['name']
       end
     end
 
-    def populate_blueprints
-      unless @blueprints
+    def blueprints
+      unless @blueprints_
         char_blueprints = EveClient::Characters.get_blueprints(@id)
-        blueprints = Blueprint.all({type_id: char_blueprints.map {|blueprint| blueprint['type_id'].to_i}})
-
-        @blueprints = blueprints.map do |blueprint|
-          blueprint.name
-        end
+        @blueprints_ = char_blueprints.map {|blueprint| Blueprint.new(blueprint)}
+      else
+        @blueprints_
       end
     end
 
     def populate_skills
       unless @skills
         character_skills = EveClient::Characters.get_skills(@id)
-        skills = Skill.all({type_id: character_skills['skills'].map {|skill| skill['skill_id'].to_i}})
-
-        @skills = skills.map do |blueprint|
-          blueprint.name
-        end
+        # skills = Skill.all({type_id: character_skills['skills'].map {|skill| skill['skill_id'].to_i}})
+        #
+        # @skills = skills.map do |blueprint|
+        #   blueprint.name
+        # end
       end
     end
 
